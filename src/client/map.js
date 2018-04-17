@@ -147,7 +147,7 @@ function initMap(connection, trackConnection, settings, drawObject) {
       })
       .onValue(tracks => {
         const units = Bacon.combineAsArray(
-          paths.map(path => trackConnection.getUnits(path).mapError((err) => "n/a"))
+          paths.map(path => trackConnection.getUnits(path).mapError((err) => "n/a")) // eslint-disable-line no-unused-vars
         )
         units.onValue(units => {
           renderTracks(map, tracks, paths, units)
@@ -288,9 +288,9 @@ const trackColors = [
   "#a262a6",
 ]
 
-function renderTracks (map, featureCollection, paths, units) {
+function renderTracks (map, featureCollection, units) {
   trackLayers.forEach(layer => map.removeLayer(layer))
-  trackLayers = featureCollection.features.reduce((acc, feature, i) => {
+  trackLayers = featureCollection.features.reduce((acc, feature ) => {
     const dayIndex = feature.properties.starttime
       ? (new Date(feature.properties.starttime).getTime() / 86400000).toFixed()
       : 0
@@ -299,7 +299,7 @@ function renderTracks (map, featureCollection, paths, units) {
       stroke: 8
     }
     const geoJSONLayer = Leaf.geoJSON(feature, { style: basicStyle })
-    geoJSONLayer.on('click', e =>
+    geoJSONLayer.on('click', () =>
       geoJSONLayer.setStyle(_.assign({}, basicStyle, { weight: 6 }))
     )
     acc.push(geoJSONLayer)
@@ -360,7 +360,7 @@ function toDataLayer (feature, path, unit, pathIndex, pathsCount) {
         circleMarker.bindPopup(
           `<dl><dt>${path}</dt><dd>${displayValue} ${unit}</dd></dl><i>${new Date(coordinates[3])}</i>`
         )
-        circleMarker.on('mouseover', e => {
+        circleMarker.on('mouseover', () => {
           circleMarker.openPopup()
         })
 
